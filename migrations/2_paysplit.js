@@ -1,5 +1,5 @@
-const Sharing = artifacts.require("./Sharing.sol");
+const PaySplit = artifacts.require("./PaySplit.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Sharing);
+  deployer.deploy(PaySplit);
 };
