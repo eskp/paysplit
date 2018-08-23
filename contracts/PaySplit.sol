@@ -1,6 +1,11 @@
 pragma solidity ^0.4.24;
 
-// PLEASE USE SAFEMATH
+// TODO IMPLEMENT A LIBRARY
+
+// TODO PLEASE USE SAFEMATH
+
+// TODO COMMENT ACCORDING TO SPEC
+// https://solidity.readthedocs.io/en/v0.4.21/layout-of-source-files.html#comments
 
 contract PaySplit {
 
@@ -15,7 +20,9 @@ contract PaySplit {
 
     Group[] groups;
 
-    event GroupCreated(uint256 _groupId);
+    event GroupCreated(uint256 groupId);
+    event ExpenseCreated(uint256 groupId, address sender, uint256 cost);
+
     // TODO Add more events
 
     function addGroup (address[] _friends) public {
@@ -30,6 +37,7 @@ contract PaySplit {
         Group storage group = groups[_groupId];
         group.total += _cost; // BAD MATH
         group.spent[msg.sender] += _cost; // BAD MATH
+        emit ExpenseCreated(_groupId, msg.sender, _cost);
     }
 
     function finaliseGroup (uint256 _groupId) public {
