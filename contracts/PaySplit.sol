@@ -54,12 +54,14 @@ contract PaySplit {
 
     function payOwed (uint256 _groupId) public payable {
         Group storage group = groups[_groupId];
-        if (group.spent[msg.sender] < group.perUserCost) {
-            if ((msg.value - group.owes[msg.sender]) > 0) {
-                msg.sender.transfer(msg.value - group.owes[msg.sender]);
-            }
-        }
-        group.owes[msg.sender] -= msg.value;
+        group.total -= msg.value; // BAD MATH
+        group.perUserCost = group.total / group.friends.length;
+        msg.sender.transfer(msg.value - group.owes[msg.sender]);
+        // if (group.spent[msg.sender] < group.perUserCost) {
+        //     if ((msg.value - group.owes[msg.sender]) >= 0) {
+                
+        //     }
+        // }
 
         // TODO ADD EVENT
     }

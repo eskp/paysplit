@@ -106,10 +106,12 @@ function initPaySplitContract () {
         alert("No account is unlocked, please authorize an account on Metamask.")
       } else {
         PaySplitContract.deployed().then(function(instance) {
-          return instance.getFriendOwes(groupId, accounts[0], {from: accounts[0]});
+          return instance.getFriendOwes(groupId, friend, {from: accounts[0]});
         }).then(function(result) {
-          return result;
-          console.log(result);
+          //return result;
+          if (result.toNumber() > 0) {
+            console.log(result.toNumber())
+          }
         }).catch(function(err) {
           console.log(err.message);
         });
@@ -131,9 +133,9 @@ function initPaySplitContract () {
         }).then(function(result) {
           for (i = 0; i < result.length; i++) { // go through friends
             if (result[i] !== nullAddress) {
-              console.log(this.getFriendOwes($("#group").val(), result[i]))
+              //console.log(this.getFriendOwes($("#group").val(), result[i]))
               // TODO PRINT TO PAGE NOT CONSOLE
-              console.log(result[i], owes)
+              console.log(result[i], this.getFriendOwes($("#group").val(), result[i]))
             }
           }
         }).catch(function(err) {
