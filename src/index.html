@@ -9,7 +9,11 @@
     <hr/>
 
     <div style="text-align: center;">
-      <h3><span id="wrestler1"></span> <span style="color: red"></span> <span id="wrestler2"></span></h3>
+      
+      <div id="here">
+        <input id="friends" type='text' placeholder='0x...'>
+      </div>
+      <button id="another-friend">Add friend</button>
 
       <button id="addGroup" onclick="addGroup()">CREATE NEW GROUP</button>
       <br/>
@@ -17,11 +21,14 @@
 
       <label for=group>Group ID</label>
       <input id="group" type=”text”>
-      <label for=expense>Expense $</label>
+      <label for=expense>Expense in eth</label>
       <input id="expense" type=”text”>
 
       <button id="addExpense" onclick="addExpense()">CREATE NEW EXPENSE</button>
-      <!-- TODO Add input field to the above ^^ -->
+      <br/>
+      <br/>
+      <button id="getGroup" onclick="getGroup()">GET GROUP INFO</button>
+      <button id="getGroupFriends" onclick="getGroupFriends()">GET GROUP FRIENDS</button>
 
 
     </div>
@@ -40,5 +47,13 @@
     <script src="truffle-contract.min.js"></script>
     <!-- app.js is where we will write our JS logic -->
     <script src="app.js"></script>
+    <script>
+      $('#another-friend').click(function(e) {
+        console.log($('#here').find('input').map(function() {
+          return this.value
+        }).get());
+        $('#here').append($("<input id='friends' type='text' placeholder='0x...'>"));
+      });
+    </script>
   </body>
 </html>
