@@ -37,12 +37,12 @@ contract PaySplit {
         Group storage group = groups[_groupId];
         group.total += _cost; // BAD MATH
         group.spent[msg.sender] += _cost; // BAD MATH
+        group.perUserCost = group.total / group.friends.length;
         emit ExpenseCreated(_groupId, msg.sender, _cost);
     }
 
     function finaliseGroup (uint256 _groupId) public {
         Group storage group = groups[_groupId];
-        group.perUserCost = group.total / group.friends.length;
         group.finalised = true;
     }
 
@@ -61,6 +61,19 @@ contract PaySplit {
         if (group.spent[msg.sender] > group.perUserCost) {
             msg.sender.transfer(group.spent[msg.sender] - group.perUserCost);
         }
+    }
+
+    function getGroupsCount() public view returns (uint) {
+        return groups.length;
+    }
+
+    function getGroup(uint256 _groupId) public view returns (uint256, uint256, uint256, bool) {
+        Group storage group = groups[_groupId];
+        return (groups[_groupId].total, group.friends.length, groups[_groupId].perUserCost, groups[_groupId].finalised);
+    }
+
+    function getGroupFriends(uint256 _groupId) public view returns (address[]) {
+        return (groups[_groupId].friends);
     }
 
 }
