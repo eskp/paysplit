@@ -1,4 +1,4 @@
-### Get started:
+### Get started
 
 1. Make sure these are installed: Ganache, Truffle, Metamask Chrome plugin
 
@@ -20,7 +20,7 @@
 
         yarn run dev
 
-### About
+### Motivation
 
 Keep track and settle crypto expenses between friends.
 
@@ -43,3 +43,17 @@ Instead of paying it off or balancing between all straight away, present further
 - Push notifications
 - Set group photo
 - Picture of receipt
+
+
+### How to use
+
+1. Open Chrome developer console to see output of the app.
+2. Create new Group. Group ID will be shown. Optional supply friend's addresses.
+If no addresses supplied, the person creating the group becomes sole member.
+3. Input Group ID and click Get group info to see group information printed to console.
+4. Create new expense entering an amount of eth into ether field, clicking "Create new expense" button and confirming the transaction in Metamask.
+5. Get group info button will confirm of the new values
+6. If a user wishes to pay the owed amount she can do so by inputting amount owed in eth field and pressing "Pay owed" button.
+7. Otherwise, if the user owed eth, she can press "Claim owed"
+8. The group gets finalised when everyone is payed up.
+
