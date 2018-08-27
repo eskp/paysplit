@@ -7,12 +7,16 @@ pragma solidity ^0.4.24;
 // TODO COMMENT ACCORDING TO SPEC
 // https://solidity.readthedocs.io/en/v0.4.21/layout-of-source-files.html#comments
 
+/// @title A contract to make it easy to split ether payments between friends
+/// @author Simon KP
+/// @notice 
 contract PaySplit {
 
     struct Group {
         address[] friends;
         uint256 total;
         mapping(address => uint256) spent;
+        mapping(address => uint256) owes;
 
         bool finalised;
         uint256 perUserCost;
@@ -35,9 +39,11 @@ contract PaySplit {
         // msg.sender is the person who incurred the expense
         require(!group.finalised, "This group is all payed up");
         Group storage group = groups[_groupId];
+        //require(group.spent[msg.sender] != address(0), "Account is not part of the group");
         group.total += _cost; // BAD MATH
         group.spent[msg.sender] += _cost; // BAD MATH
         group.perUserCost = group.total / group.friends.length;
+        group.owes[msg.sender] = group.perUserCost;
         emit ExpenseCreated(_groupId, msg.sender, _cost);
     }
 
@@ -49,11 +55,13 @@ contract PaySplit {
     function payOwed (uint256 _groupId) public payable {
         Group storage group = groups[_groupId];
         if (group.spent[msg.sender] < group.perUserCost) {
-            uint256 owes = group.perUserCost - group.spent[msg.sender];
-            if ((msg.value - owes) > 0) {
-                msg.sender.transfer(msg.value - owes);
+            if ((msg.value - group.owes[msg.sender]) > 0) {
+                msg.sender.transfer(msg.value - group.owes[msg.sender]);
             }
         }
+        group.owes[msg.sender] -= msg.value;
+
+        // TODO ADD EVENT
     }
 
     function claimOwed (uint256 _groupId) public {
@@ -61,6 +69,7 @@ contract PaySplit {
         if (group.spent[msg.sender] > group.perUserCost) {
             msg.sender.transfer(group.spent[msg.sender] - group.perUserCost);
         }
+        // TODO ADD EVENT
     }
 
     function getGroupsCount() public view returns (uint) {
@@ -74,6 +83,10 @@ contract PaySplit {
 
     function getGroupFriends(uint256 _groupId) public view returns (address[]) {
         return (groups[_groupId].friends);
+    }
+
+    function getFriendOwes(uint256 _groupId, address _friend) public view returns (uint256) {
+        return (groups[_groupId].owes[_friend]);
     }
 
 }

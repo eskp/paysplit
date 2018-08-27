@@ -57,8 +57,6 @@ function initPaySplitContract () {
         alert("No account is unlocked, please authorize an account on Metamask.")
       } else {
         PaySplitContract.deployed().then(function(instance) {
-          // TODO PASS FRIENDS FROM INPUT FIELD
-          //friends = [accounts[0], accounts[1]];
           var friends = [];
           var div = document.getElementById('here');
           var input = div.getElementsByTagName('input');
@@ -88,9 +86,30 @@ function initPaySplitContract () {
         alert("No account is unlocked, please authorize an account on Metamask.")
       } else {
         PaySplitContract.deployed().then(function(instance) {
-          return instance.addExpense($("#group").val(), $("#expense").val(), {from: accounts[0]});
+          return instance.addExpense($("#group").val(), $("#amount").val(), {from: accounts[0]});
         }).then(function(result) {
           console.log('Added new expense')
+        }).catch(function(err) {
+          console.log(err.message);
+        });
+      }
+    }
+    });
+  }
+
+  function getFriendOwes (groupId, friend) {
+    web3.eth.getAccounts(function(error, accounts) {
+    if (error) {
+      console.log(error);
+    } else {
+      if(accounts.length <= 0) {
+        alert("No account is unlocked, please authorize an account on Metamask.")
+      } else {
+        PaySplitContract.deployed().then(function(instance) {
+          return instance.getFriendOwes(groupId, accounts[0], {from: accounts[0]});
+        }).then(function(result) {
+          return result;
+          console.log(result);
         }).catch(function(err) {
           console.log(err.message);
         });
@@ -112,7 +131,9 @@ function initPaySplitContract () {
         }).then(function(result) {
           for (i = 0; i < result.length; i++) { // go through friends
             if (result[i] !== nullAddress) {
-              console.log(result[i])
+              console.log(this.getFriendOwes($("#group").val(), result[i]))
+              // TODO PRINT TO PAGE NOT CONSOLE
+              console.log(result[i], owes)
             }
           }
         }).catch(function(err) {
@@ -134,7 +155,28 @@ function initPaySplitContract () {
         PaySplitContract.deployed().then(function(instance) {
           return instance.getGroup($("#group").val(), {from: accounts[0]});
         }).then(function(result) {
+          // TODO PRINT TO PAGE NOT CONSOLE
           console.log("total: ", result[0].toNumber(), "friends: ", result[1].toNumber(), "perUserCost: ", result[2].toNumber(), " finalised: ", result[3])
+        }).catch(function(err) {
+          console.log(err.message);
+        });
+      }
+    }
+    });
+  }
+
+  function payOwed () {
+    web3.eth.getAccounts(function(error, accounts) {
+    if (error) {
+      console.log(error);
+    } else {
+      if(accounts.length <= 0) {
+        alert("No account is unlocked, please authorize an account on Metamask.")
+      } else {
+        PaySplitContract.deployed().then(function(instance) {
+          return instance.payOwed($("#group").val(), {from: accounts[0], value: web3.toWei($("#amount").val(), "ether")});
+        }).then(function(result) {
+          console.log('Payed owed eth')
         }).catch(function(err) {
           console.log(err.message);
         });
